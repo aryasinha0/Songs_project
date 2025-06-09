@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music App</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/e07ee1d499.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="music-player">
+            <nav>
+                <div class="circle">
+                    <i class="fa-solid fa-angle-left"></i>
+                </div>
+                <div class="circle">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </nav>
+            <img src="./image.jpg" alt="image" class="song-img">
+            <h1>Laal Pari</h1>
+            <p>Honey Singh</p>
+
+            <audio id="song">
+                <source src="./Laal Pari - Housefull 5 320 Kbps.mp3" type="audio/mpeg"> 
+            </audio>
+            <input type="range" value="0" id="progress">
+
+            <div class="controls">
+                <div><i class="fa-solid fa-backward"></i></div>
+                <div onclick="playPause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>
+                <div><i class="fa-solid fa-forward"></i></div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+    let progress = document.getElementById("progress");
+    let song = document.getElementById("song");
+    let ctrlIcon = document.getElementById("ctrlIcon");
+
+    // Set initial max values once metadata is loaded
+    song.onloadedmetadata = function () {
+        progress.max = song.duration;
+        progress.value = song.currentTime;
+    }
+
+    // Update the progress bar every 500ms when the song is playing
+    let updateProgressInterval; // variable to store the interval ID
+
+    function playPause() {
+        if (ctrlIcon.classList.contains("fa-pause")) {
+            song.pause();
+            ctrlIcon.classList.remove("fa-pause");
+            ctrlIcon.classList.add("fa-play");
+
+            clearInterval(updateProgressInterval); // stop updating progress
+        } else {
+            song.play();
+            ctrlIcon.classList.add("fa-pause");
+            ctrlIcon.classList.remove("fa-play");
+
+            // start updating progress bar
+            updateProgressInterval = setInterval(() => {
+                progress.value = song.currentTime;
+            }, 500);
+        }
+    }
+
+    // Seek the song and update play/pause state when slider is changed
+    progress.onchange = function () {
+        song.currentTime = progress.value;
+
+        // Resume playing on slider change
+        song.play();
+        ctrlIcon.classList.add("fa-pause");
+        ctrlIcon.classList.remove("fa-play");
+
+        // restart interval
+        clearInterval(updateProgressInterval);
+        updateProgressInterval = setInterval(() => {
+            progress.value = song.currentTime;
+        }, 500);
+    }
+</script>
+
+
+</body>
+</html>
